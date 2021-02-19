@@ -101,6 +101,14 @@ struct BiosCommand {
     dedicated_gfx_set: Option<bool>,
     #[options(no_long, help = "get GPU mode")]
     dedicated_gfx_get: bool,
+    #[options(
+        meta = "",
+        no_long,
+        help = "toggle panel overdrive to/from dedicated mode"
+    )]
+    overdrive_panel_set: Option<bool>,
+    #[options(no_long, help = "get GPU mode")]
+    overdrive_panel_get: bool,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -211,7 +219,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if (cmd.dedicated_gfx_set.is_none()
                 && !cmd.dedicated_gfx_get
                 && cmd.post_sound_set.is_none()
-                && !cmd.post_sound_get)
+                && !cmd.post_sound_get
+                && cmd.overdrive_panel_set.is_none()
+                && !cmd.overdrive_panel_get)
                 || cmd.help
             {
                 println!("Missing arg or command\n\n{}", cmd.self_usage());
@@ -231,6 +241,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 };
                 println!("Bios POST sound on: {}", res);
             }
+
             if let Some(opt) = cmd.dedicated_gfx_set {
                 dbus.proxies().rog_bios().set_dedicated_gfx(opt)?;
             }
@@ -241,6 +252,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     false
                 };
                 println!("Bios dedicated GPU on: {}", res);
+            }
+
+            if let Some(opt) = cmd.overdrive_panel_set {
+                dbus.proxies().rog_bios().set_panel_overdrive(opt)?;
+            }
+            if cmd.overdrive_panel_get {
+                let res = if dbus.proxies().rog_bios().get_panel_overdrive()? == 1 {
+                    true
+                } else {
+                    false
+                };
+                println!("Bios Panel Overdrive: {}", res);
             }
         }
         None => {

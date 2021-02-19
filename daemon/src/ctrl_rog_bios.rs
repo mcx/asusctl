@@ -15,6 +15,8 @@ static ASUS_SWITCH_GRAPHIC_MODE: &str =
     "/sys/firmware/efi/efivars/AsusSwitchGraphicMode-607005d5-3f75-4b2e-98f0-85ba66797a3e";
 static ASUS_POST_LOGO_SOUND: &str =
     "/sys/firmware/efi/efivars/AsusPostLogoSound-607005d5-3f75-4b2e-98f0-85ba66797a3e";
+static ASUS_PANEL_OVERDRIVE: &str =
+    "/sys/firmware/efi/efivars/AsusPanelODVar-e5973dfb-befa-dcba-8e62-ceaa684726dd";
 
 pub struct CtrlRogBios {
     _config: Arc<Mutex<Config>>,
@@ -24,6 +26,7 @@ pub struct CtrlRogBios {
 pub struct RogBiosSupportedFunctions {
     pub post_sound_toggle: bool,
     pub dedicated_gfx_toggle: bool,
+    pub panel_overdrive: bool,
 }
 
 impl GetSupported for CtrlRogBios {
@@ -33,6 +36,7 @@ impl GetSupported for CtrlRogBios {
         RogBiosSupportedFunctions {
             post_sound_toggle: CtrlRogBios::check_path_exists(ASUS_POST_LOGO_SOUND).is_ok(),
             dedicated_gfx_toggle: CtrlRogBios::check_path_exists(ASUS_SWITCH_GRAPHIC_MODE).is_ok(),
+            panel_overdrive: CtrlRogBios::check_path_exists(ASUS_PANEL_OVERDRIVE).is_ok(),
         }
     }
 }
@@ -94,6 +98,35 @@ impl CtrlRogBios {
 
     #[dbus_interface(signal)]
     pub fn notify_post_boot_sound(&self, dedicated: bool) -> zbus::Result<()> {}
+
+    // // // // // // // // // //
+
+    pub fn set_panel_overdrive(&mut self, on: bool) {
+        Self::set_panel_od(on)
+            .map_err(|err| {
+                warn!("CtrlRogBios: set_panel_overdrive {}", err);
+                err
+            })
+            .ok();
+        self.notify_panel_overdrive(on)
+            .map_err(|err| {
+                warn!("CtrlRogBios: notify_panel_overdrive {}", err);
+                err
+            })
+            .ok();
+    }
+
+    pub fn panel_overdrive(&self) -> i8 {
+        Self::get_panel_od()
+            .map_err(|err| {
+                warn!("CtrlRogBios: get_panel_overdrive {}", err);
+                err
+            })
+            .unwrap_or(-1)
+    }
+
+    #[dbus_interface(signal)]
+    pub fn notify_panel_overdrive(&self, dedicated: bool) -> zbus::Result<()> {}
 }
 
 impl crate::ZbusAdd for CtrlRogBios {
@@ -128,6 +161,15 @@ impl CtrlRogBios {
         match CtrlRogBios::check_path_exists(ASUS_POST_LOGO_SOUND) {
             Ok(_) => {
                 CtrlRogBios::set_path_mutable(ASUS_POST_LOGO_SOUND)?;
+            }
+            Err(err) => {
+                info!("ROG boot sound toggle (bios) not detected: {}", err);
+            }
+        }
+
+        match CtrlRogBios::check_path_exists(ASUS_PANEL_OVERDRIVE) {
+            Ok(_) => {
+                CtrlRogBios::set_path_mutable(ASUS_PANEL_OVERDRIVE)?;
             }
             Err(err) => {
                 info!("ROG boot sound toggle (bios) not detected: {}", err);
@@ -248,6 +290,47 @@ impl CtrlRogBios {
         } else {
             data[idx] = 0;
             info!("Set boot POST sound off");
+        }
+        file.write_all(&data)
+            .map_err(|err| RogError::Path(path.into(), err))?;
+
+        Ok(())
+    }
+
+    pub fn get_panel_od() -> Result<i8, RogError> {
+        let path = ASUS_PANEL_OVERDRIVE;
+        let mut file = OpenOptions::new()
+            .read(true)
+            .open(path)
+            .map_err(|err| RogError::Path(path.into(), err))?;
+
+        let mut data = Vec::new();
+        file.read_to_end(&mut data)
+            .map_err(|err| RogError::Read(path.into(), err))?;
+
+        let idx = data.len() - 1;
+        Ok(data[idx] as i8)
+    }
+
+    pub(super) fn set_panel_od(on: bool) -> Result<(), RogError> {
+        let path = ASUS_PANEL_OVERDRIVE;
+        let mut file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .open(path)
+            .map_err(|err| RogError::Path(path.into(), err))?;
+
+        let mut data = Vec::new();
+        file.read_to_end(&mut data)
+            .map_err(|err| RogError::Read(path.into(), err))?;
+
+        let idx = data.len() - 1;
+        if on {
+            data[idx] = 1;
+            info!("Set panel overdrive on");
+        } else {
+            data[idx] = 0;
+            info!("Set panel overdrive off");
         }
         file.write_all(&data)
             .map_err(|err| RogError::Path(path.into(), err))?;

@@ -31,11 +31,17 @@ trait Daemon {
     /// DedicatedGraphicMode method
     fn dedicated_graphic_mode(&self) -> zbus::Result<i16>;
 
+    /// PanelOverdrive method
+    fn panel_overdrive(&self) -> zbus::Result<i16>;
+
     /// PostBootSound method
     fn post_boot_sound(&self) -> zbus::Result<i16>;
 
     /// SetDedicatedGraphicMode method
     fn set_dedicated_graphic_mode(&self, dedicated: bool) -> zbus::Result<()>;
+
+    /// SetPanelOverdrive method
+    fn set_panel_overdrive(&self, on: bool) -> zbus::Result<()>;
 
     /// SetPostBootSound method
     fn set_post_boot_sound(&self, on: bool) -> zbus::Result<()>;
@@ -43,6 +49,10 @@ trait Daemon {
     /// NotifyDedicatedGraphicMode signal
     #[dbus_proxy(signal)]
     fn notify_dedicated_graphic_mode(&self, dedicated: bool) -> zbus::Result<()>;
+
+    /// NotifyPanelOverdrive signal
+    #[dbus_proxy(signal)]
+    fn notify_panel_overdrive(&self, dedicated: bool) -> zbus::Result<()>;
 
     /// NotifyPostBootSound signal
     #[dbus_proxy(signal)]
@@ -82,6 +92,16 @@ impl<'a> RogBiosProxy<'a> {
     }
 
     #[inline]
+    pub fn get_panel_overdrive(&self) -> Result<i16> {
+        self.0.panel_overdrive()
+    }
+
+    #[inline]
+    pub fn set_panel_overdrive(&self, on: bool) -> Result<()> {
+        self.0.set_panel_overdrive(on)
+    }
+
+    #[inline]
     pub fn connect_notify_dedicated_graphic_mode(
         &self,
         dedicated: Arc<Mutex<Option<bool>>>,
@@ -100,6 +120,19 @@ impl<'a> RogBiosProxy<'a> {
         sound: Arc<Mutex<Option<bool>>>,
     ) -> zbus::fdo::Result<()> {
         self.0.connect_notify_post_boot_sound(move |data| {
+            if let Ok(mut lock) = sound.lock() {
+                *lock = Some(data);
+            }
+            Ok(())
+        })
+    }
+
+    #[inline]
+    pub fn connect_notify_panel_overdrive(
+        &self,
+        sound: Arc<Mutex<Option<bool>>>,
+    ) -> zbus::fdo::Result<()> {
+        self.0.connect_notify_panel_overdrive(move |data| {
             if let Ok(mut lock) = sound.lock() {
                 *lock = Some(data);
             }
