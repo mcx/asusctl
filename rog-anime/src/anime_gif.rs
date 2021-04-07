@@ -22,13 +22,15 @@ impl AniMeFrame {
     }
 }
 
+/// A gif animation. This is a collection of frames from the gif, and a duration
+/// that the animation should be shown for.
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct AniMeGif(Vec<AniMeFrame>);
+pub struct AniMeGif(Vec<AniMeFrame>, Option<Duration>);
 
 impl AniMeGif {
     /// Create an animation using the 74x36 ASUS gif format
-    pub fn create_diagonal_gif(file_name: &Path, brightness: f32) -> Result<Self, AnimeError> {
-        let mut matrix = AniMeDiagonal::new();
+    pub fn create_diagonal_gif(file_name: &Path, duration: Option<Duration>, brightness: f32) -> Result<Self, AnimeError> {
+        let mut matrix = AniMeDiagonal::new(None);
 
         let mut decoder = gif::DecodeOptions::new();
         // Configure the decoder such that it will expand the image to RGBA.
@@ -59,7 +61,7 @@ impl AniMeGif {
                 delay: Duration::from_millis(wait as u64),
             });
         }
-        Ok(Self(frames))
+        Ok(Self(frames, duration))
     }
 
     /// Create an animation using a gif of any size. This method must precompute the
@@ -69,6 +71,7 @@ impl AniMeGif {
         scale: f32,
         angle: f32,
         translation: Vec2,
+        duration: Option<Duration>,
         brightness: f32,
     ) -> Result<Self, AnimeError> {
         let mut frames = Vec::new();
@@ -91,6 +94,7 @@ impl AniMeGif {
             brightness,
             pixels,
             decoder.width() as u32,
+            None,
         );
 
         while let Some(frame) = decoder.read_next_frame()? {
@@ -99,7 +103,7 @@ impl AniMeGif {
                 let pixels: Vec<Pixel> =
                     vec![Pixel::default(); (width as u32 * height as u32) as usize];
                 image =
-                    AniMeImage::new(Vec2::new(scale,scale), angle, translation, brightness, pixels, width as u32);
+                    AniMeImage::new(Vec2::new(scale,scale), angle, translation, brightness, pixels, width as u32, None);
             }
             for (y, row) in frame.buffer.chunks(frame.width as usize * 4).enumerate() {
                 for (x, px) in row.chunks(4).enumerate() {
@@ -122,10 +126,14 @@ impl AniMeGif {
                 delay: Duration::from_millis(wait as u64),
             });
         }
-        Ok(Self(frames))
+        Ok(Self(frames, duration))
     }
 
     pub fn frames(&self) -> &[AniMeFrame] {
         &self.0
+    }
+
+    pub fn duration(&self) -> Option<Duration> {
+        self.1
     }
 }

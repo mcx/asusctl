@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{path::Path, time::Duration};
 
 pub use glam::Vec2;
 use glam::{Mat3, Vec3};
@@ -70,6 +70,8 @@ pub struct AniMeImage {
     /// THe image data for sampling
     img_pixels: Vec<Pixel>,
     width: u32,
+    /// Optional time to display the image. Unused when image is part of a gif animation for example
+    pub duration: Option<Duration>,
 }
 
 impl AniMeImage {
@@ -80,6 +82,7 @@ impl AniMeImage {
         bright: f32,
         pixels: Vec<Pixel>,
         width: u32,
+        duration: Option<Duration>,
     ) -> Self {
         Self {
             scale,
@@ -89,6 +92,7 @@ impl AniMeImage {
             led_pos: LED_IMAGE_POSITIONS,
             img_pixels: pixels,
             width,
+            duration,
         }
     }
 
@@ -238,6 +242,7 @@ impl AniMeImage {
         scale: f32,
         angle: f32,
         translation: Vec2,
+        duration: Option<Duration>,
         bright: f32,
     ) -> Result<Self, AnimeError> {
         use pix::el::Pixel;
@@ -261,7 +266,7 @@ impl AniMeImage {
             _ => return Err(AnimeError::Format),
         };
 
-        let mut matrix = AniMeImage::new(Vec2::new(scale, scale), angle, translation, bright, pixels, width);
+        let mut matrix = AniMeImage::new(Vec2::new(scale, scale), angle, translation, bright, pixels, width, duration);
 
         matrix.update();
         Ok(matrix)

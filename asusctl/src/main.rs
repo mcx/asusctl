@@ -180,6 +180,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             image.scale,
                             image.angle,
                             Vec2::new(image.x_pos, image.y_pos),
+                            None,
                             image.bright,
                         )?;
 

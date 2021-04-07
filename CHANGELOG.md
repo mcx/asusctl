@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display PNG images on AniMe with scale, position, angle, and brightness
 - AniMe display parts split out to individual crate in preparation for publishing
   on crates.io
+- Revert zbus to 1.9.1
 
 # [3.3.0] - 2021-04-3
 ### Changed
