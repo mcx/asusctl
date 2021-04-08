@@ -21,7 +21,7 @@
 
 use std::sync::{Arc, Mutex};
 
-use zbus::{dbus_proxy, Connection, Result};
+use zbus::{Connection, Result, SignalHandlerId, dbus_proxy};
 
 use rog_types::{
     aura_modes::{AuraEffect, LedBrightness},
@@ -136,7 +136,7 @@ impl<'a> LedProxy<'a> {
     }
 
     #[inline]
-    pub fn connect_notify_led(&self, led: Arc<Mutex<Option<AuraEffect>>>) -> zbus::fdo::Result<()> {
+    pub fn connect_notify_led(&self, led: Arc<Mutex<Option<AuraEffect>>>) -> zbus::fdo::Result<SignalHandlerId> {
         self.0.connect_notify_led(move |data| {
             if let Ok(mut lock) = led.lock() {
                 if let Ok(dat) = serde_json::from_str(&data) {

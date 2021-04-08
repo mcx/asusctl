@@ -21,7 +21,7 @@
 
 use std::sync::{Arc, Mutex};
 
-use zbus::{dbus_proxy, Connection, Result};
+use zbus::{Connection, Result, SignalHandlerId, dbus_proxy};
 
 #[dbus_proxy(
     interface = "org.asuslinux.Daemon",
@@ -85,7 +85,7 @@ impl<'a> RogBiosProxy<'a> {
     pub fn connect_notify_dedicated_graphic_mode(
         &self,
         dedicated: Arc<Mutex<Option<bool>>>,
-    ) -> zbus::fdo::Result<()> {
+    ) -> zbus::fdo::Result<SignalHandlerId> {
         self.0.connect_notify_dedicated_graphic_mode(move |data| {
             if let Ok(mut lock) = dedicated.lock() {
                 *lock = Some(data);
@@ -98,7 +98,7 @@ impl<'a> RogBiosProxy<'a> {
     pub fn connect_notify_post_boot_sound(
         &self,
         sound: Arc<Mutex<Option<bool>>>,
-    ) -> zbus::fdo::Result<()> {
+    ) -> zbus::fdo::Result<SignalHandlerId> {
         self.0.connect_notify_post_boot_sound(move |data| {
             if let Ok(mut lock) = sound.lock() {
                 *lock = Some(data);

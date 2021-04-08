@@ -22,7 +22,7 @@
 use std::sync::{Arc, Mutex};
 
 use rog_types::gfx_vendors::{GfxPower, GfxRequiredUserAction, GfxVendors};
-use zbus::{dbus_proxy, Connection, Result};
+use zbus::{Connection, Result, SignalHandlerId, dbus_proxy};
 
 #[dbus_proxy(
     interface = "org.asuslinux.Daemon",
@@ -78,7 +78,7 @@ impl<'a> GfxProxy<'a> {
     pub fn connect_notify_action(
         &self,
         action: Arc<Mutex<Option<GfxRequiredUserAction>>>,
-    ) -> zbus::fdo::Result<()> {
+    ) -> zbus::fdo::Result<SignalHandlerId> {
         self.0.connect_notify_action(move |data| {
             if let Ok(mut lock) = action.lock() {
                 *lock = Some(data);
@@ -91,7 +91,7 @@ impl<'a> GfxProxy<'a> {
     pub fn connect_notify_gfx(
         &self,
         vendor: Arc<Mutex<Option<GfxVendors>>>,
-    ) -> zbus::fdo::Result<()> {
+    ) -> zbus::fdo::Result<SignalHandlerId> {
         self.0.connect_notify_gfx(move |data| {
             if let Ok(mut lock) = vendor.lock() {
                 *lock = Some(data);

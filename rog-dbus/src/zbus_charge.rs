@@ -21,7 +21,7 @@
 
 use std::sync::{Arc, Mutex};
 
-use zbus::{dbus_proxy, Connection, Result};
+use zbus::{Connection, Result, SignalHandlerId, dbus_proxy};
 
 #[dbus_proxy(
     interface = "org.asuslinux.Daemon",
@@ -62,7 +62,7 @@ impl<'a> ChargeProxy<'a> {
     }
 
     #[inline]
-    pub fn connect_notify_charge(&self, charge: Arc<Mutex<Option<u8>>>) -> zbus::fdo::Result<()> {
+    pub fn connect_notify_charge(&self, charge: Arc<Mutex<Option<u8>>>) -> zbus::fdo::Result<SignalHandlerId> {
         self.0.connect_notify_charge(move |data| {
             if let Ok(mut lock) = charge.lock() {
                 *lock = Some(data);

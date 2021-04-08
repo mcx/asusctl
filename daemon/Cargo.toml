@@ -28,9 +28,9 @@ udev = "^0.6"
 log = "^0.4"
 env_logger = "^0.8"
 
-zbus = "^1.9.1"
-zvariant = "^2.6"
-logind-zbus = "^0.7.1"
+zbus = { path = "../../zbus/zbus" }
+zvariant = { path = "../../zbus/zvariant" }
+logind-zbus = { path = "../../logind-zbus" }
 
 # serialisation
 serde = "^1.0"

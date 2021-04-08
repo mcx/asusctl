@@ -222,8 +222,13 @@ dependencies = [
  "sysfs-class",
  "toml",
  "udev",
+<<<<<<< HEAD
  "zbus",
  "zvariant",
+=======
+ "zbus 2.0.0-beta.3",
+ "zvariant 2.6.0",
+>>>>>>> c35d769 (Using local build of zbus)
 ]
 
 [[package]]
@@ -554,6 +559,7 @@ dependencies = [
 
 [[package]]
 name = "logind-zbus"
+<<<<<<< HEAD
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dca64bea11e365933e0c4a1a9342f0122d1d2822a09c87dab0e1d314adb353a2"
@@ -564,6 +570,16 @@ dependencies = [
  "zbus_macros",
  "zvariant",
  "zvariant_derive",
+=======
+version = "1.0.0-beta1"
+dependencies = [
+ "serde",
+ "serde_json",
+ "zbus 2.0.0-beta.3",
+ "zbus_macros 2.0.0-beta.3",
+ "zvariant 2.6.0",
+ "zvariant_derive 2.6.0",
+>>>>>>> c35d769 (Using local build of zbus)
 ]
 
 [[package]]
@@ -627,6 +643,21 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< HEAD
+=======
+name = "nix"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
+dependencies = [
+ "bitflags 1.2.1",
+ "cc",
+ "cfg-if 1.0.0",
+ "libc",
+]
+
+[[package]]
+>>>>>>> c35d769 (Using local build of zbus)
 name = "nom"
 version = "5.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -645,9 +676,15 @@ dependencies = [
  "mac-notification-sys",
  "serde",
  "winrt-notification",
+<<<<<<< HEAD
  "zbus",
  "zvariant",
  "zvariant_derive",
+=======
+ "zbus 1.9.1",
+ "zvariant 2.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zvariant_derive 2.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+>>>>>>> c35d769 (Using local build of zbus)
 ]
 
 [[package]]
@@ -877,8 +914,8 @@ dependencies = [
  "png_pong",
  "serde",
  "serde_derive",
- "zvariant",
- "zvariant_derive",
+ "zvariant 2.6.0",
+ "zvariant_derive 2.6.0",
 ]
 
 [[package]]
@@ -889,9 +926,15 @@ dependencies = [
  "rog_fan_curve",
  "rog_types",
  "serde_json",
+<<<<<<< HEAD
  "zbus",
  "zbus_macros",
  "zvariant",
+=======
+ "zbus 2.0.0-beta.3",
+ "zbus_macros 2.0.0-beta.3",
+ "zvariant 2.6.0",
+>>>>>>> c35d769 (Using local build of zbus)
 ]
 
 [[package]]
@@ -911,8 +954,8 @@ dependencies = [
  "rog_fan_curve",
  "serde",
  "serde_derive",
- "zvariant",
- "zvariant_derive",
+ "zvariant 2.6.0",
+ "zvariant_derive 2.6.0",
 ]
 
 [[package]]
@@ -1321,8 +1364,45 @@ dependencies = [
  "scoped-tls",
  "serde",
  "serde_repr",
+<<<<<<< HEAD
  "zbus_macros",
  "zvariant",
+]
+
+[[package]]
+name = "zbus_macros"
+version = "1.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a482c56029e48681b89b92b5db3c446db0915e8dd1052c0328a574eda38d5f93"
+=======
+ "zbus_macros 1.9.1",
+ "zvariant 2.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "zbus"
+version = "2.0.0-beta.3"
+dependencies = [
+ "async-io",
+ "async-lock",
+ "byteorder",
+ "derivative",
+ "enumflags2",
+ "event-listener",
+ "futures-core",
+ "futures-sink",
+ "futures-util",
+ "hex",
+ "nix 0.20.0",
+ "once_cell",
+ "rand",
+ "scoped-tls",
+ "serde",
+ "serde_repr",
+ "sha1",
+ "slotmap",
+ "zbus_macros 2.0.0-beta.3",
+ "zvariant 2.6.0",
 ]
 
 [[package]]
@@ -1338,6 +1418,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "zbus_macros"
+version = "2.0.0-beta.3"
+>>>>>>> c35d769 (Using local build of zbus)
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote 1.0.9",
+ "syn 1.0.68",
+<<<<<<< HEAD
+=======
+]
+
+[[package]]
+name = "zvariant"
+version = "2.6.0"
+dependencies = [
+ "byteorder",
+ "enumflags2",
+ "serde",
+ "zvariant_derive 2.6.0",
+>>>>>>> c35d769 (Using local build of zbus)
+]
+
+[[package]]
 name = "zvariant"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1346,7 +1450,17 @@ dependencies = [
  "byteorder",
  "enumflags2",
  "serde",
- "zvariant_derive",
+ "zvariant_derive 2.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "zvariant_derive"
+version = "2.6.0"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote 1.0.9",
+ "syn 1.0.68",
 ]
 
 [[package]]
