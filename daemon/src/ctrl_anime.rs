@@ -52,7 +52,7 @@ pub trait Dbus {
 impl crate::ZbusAdd for CtrlAnimeDisplay {
     fn add_to_server(self, server: &mut zbus::ObjectServer) {
         server
-            .at(&ObjectPath::from_str_unchecked("/org/asuslinux/Anime"), self)
+            .at("/org/asuslinux/Anime", self)
             .map_err(|err| {
                 warn!("CtrlAnimeDisplay: add_to_server {}", err);
                 err

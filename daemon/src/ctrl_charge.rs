@@ -64,7 +64,7 @@ impl CtrlCharge {
 impl crate::ZbusAdd for CtrlCharge {
     fn add_to_server(self, server: &mut zbus::ObjectServer) {
         server
-            .at(&ObjectPath::from_str_unchecked("/org/asuslinux/Charge"), self)
+            .at("/org/asuslinux/Charge", self)
             .map_err(|err| {
                 warn!("CtrlCharge: add_to_server {}", err);
                 err

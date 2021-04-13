@@ -102,7 +102,7 @@ impl CtrlRogBios {
 impl crate::ZbusAdd for CtrlRogBios {
     fn add_to_server(self, server: &mut zbus::ObjectServer) {
         server
-            .at(&ObjectPath::from_str_unchecked("/org/asuslinux/RogBios"), self)
+            .at("/org/asuslinux/RogBios", self)
             .map_err(|err| {
                 warn!("CtrlRogBios: add_to_server {}", err);
                 err

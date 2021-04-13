@@ -79,7 +79,7 @@ impl Dbus for CtrlGraphics {
 impl ZbusAdd for CtrlGraphics {
     fn add_to_server(self, server: &mut zbus::ObjectServer) {
         server
-            .at(&ObjectPath::from_str_unchecked("/org/asuslinux/Gfx"), self)
+            .at("/org/asuslinux/Gfx", self)
             .map_err(|err| {
                 warn!("GFX: CtrlGraphics: add_to_server {}", err);
                 err

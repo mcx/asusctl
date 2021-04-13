@@ -83,7 +83,7 @@ trait Dbus {
 impl crate::ZbusAdd for DbusKbdBacklight {
     fn add_to_server(self, server: &mut zbus::ObjectServer) {
         server
-            .at(&ObjectPath::from_str_unchecked("/org/asuslinux/Led"), self)
+            .at("/org/asuslinux/Led", self)
             .map_err(|err| {
                 error!("DbusKbdBacklight: add_to_server {}", err);
             })

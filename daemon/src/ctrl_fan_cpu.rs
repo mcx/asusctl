@@ -181,7 +181,7 @@ impl DbusFanAndCpu {
 impl crate::ZbusAdd for DbusFanAndCpu {
     fn add_to_server(self, server: &mut zbus::ObjectServer) {
         server
-            .at(&ObjectPath::from_str_unchecked("/org/asuslinux/Profile"), self)
+            .at("/org/asuslinux/Profile", self)
             .map_err(|err| {
                 warn!("DbusFanAndCpu: add_to_server {}", err);
                 err
