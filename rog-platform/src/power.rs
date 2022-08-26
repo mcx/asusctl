@@ -53,6 +53,9 @@ impl AsusPower {
                         mains = device.syspath().to_path_buf();
                     }
                     Some("Battery") => {
+                        dbg!(device.attribute_value("manufacturer"));
+                        dbg!(device.attribute_value("charge_control_end_threshold"));
+                        dbg!(device.sysname());
                         // Priortised list of checks
                         if battery.is_none() {
                             // This check required due to an instance where another "not"
