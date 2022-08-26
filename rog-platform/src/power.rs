@@ -70,7 +70,7 @@ impl AsusPower {
                                 .attribute_value("charge_control_end_threshold")
                                 .is_some()
                             {
-                                info!("Found battery power at {:?}, matched charge_control_end_threshold and energy_full_design", device.sysname());
+                                info!("Found battery power at {:?}, matched charge_control_end_threshold", device.sysname());
                                 battery = Some(device.syspath().to_path_buf());
                             } else if device.sysname().to_string_lossy().starts_with("BAT") {
                                 info!(
@@ -78,14 +78,12 @@ impl AsusPower {
                                     device.sysname()
                                 );
                                 battery = Some(device.syspath().to_path_buf());
-                            } else if let Some(m) = device.attribute_value("type") {
-                                if m.to_string_lossy().to_lowercase().contains("battery") {
-                                    info!(
-                                        "Last resort: Found battery power at {:?}",
-                                        device.sysname()
-                                    );
-                                    battery = Some(device.syspath().to_path_buf());
+                            } else {
+                                info!("Last resort: Found battery power at {:?} using type = Battery", device.sysname());
+                                for attribute in device.attributes() {
+                                    println!("    - {:?} {:?}", attribute.name(), attribute.value());
                                 }
+                                battery = Some(device.syspath().to_path_buf());
                             }
                         }
                     }
